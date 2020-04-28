@@ -1,4 +1,5 @@
 # flip-transition
+
 A library to make transitions with the FLIP technique.
 
 ## What is FLIP?
@@ -20,3 +21,4 @@ If you want to learn more or you would like to code it yourself, check out the f
 
 ## How to use
 
+Check out `index.html` in the example folder, but make sure you run `npm run build` before you open it in the browser.
