@@ -2,9 +2,11 @@ export default class FlipTransition {
   private elements: Array<HTMLElement> = [];
   private firsts: Array<DOMRect> = [];
 
-  constructor(elements: HTMLElement | Array<HTMLElement>) {
+  constructor(elements: HTMLElement | Array<HTMLElement> | HTMLCollection) {
     if (elements instanceof HTMLElement) {
       this.elements = [elements];
+    } else if (elements instanceof HTMLCollection) {
+      this.elements = [].slice.call(elements);
     } else {
       this.elements = elements;
     }
@@ -39,10 +41,14 @@ export default class FlipTransition {
           transform: 'none',
           transformOrigin: null,
         });
+        let resolved = false;
         for (const element of this.elements) {
           element.addEventListener('transitionend', () => {
             element.style.transition = '';
-            resolve();
+            if (!resolved) {
+              resolve();
+              resolved = true;
+            }
           });
         }
       });

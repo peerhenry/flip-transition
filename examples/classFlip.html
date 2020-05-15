@@ -27,6 +27,14 @@
       box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
     }
 
+    #rect.active {
+      position: absolute;
+      width: 300px;
+      height: 200px;
+      left: calc(50% - 150px);
+      top: calc(50% - 100px);
+    }
+
     #rect:hover {
       background: orangered;
     }
@@ -42,38 +50,39 @@
     title.style.height = '100%';
     const element = document.getElementById('rect');
     let state = true;
-    let expanding = false;
+    let expanded = false;
     const flip = new FlipTransition.default(element);
-    element.addEventListener('click', function (event) {
-      expanding = !expanding;
-      if (!expanding && element.firstChild) element.removeChild(title);
+
+    function performFlip() {
+      expanded = !expanded;
+      if (!expanded && element.firstChild) element.removeChild(title);
       flip.first();
+      changeState();
+      flip.play('0.4s', 'ease-out').then(fadeInTitle);
+    }
+
+    function changeState() {
       if (state) {
-        element.style.position = 'absolute';
-        element.style.width = '300px';
-        element.style.height = '200px';
-        element.style.left = 'calc(50% - 150px)';
-        element.style.top = 'calc(50% - 100px)';
+        element.classList.add('active');
       } else {
-        element.style.position = '';
-        element.style.width = '';
-        element.style.height = '';
-        element.style.left = '';
-        element.style.top = '';
+        element.classList.remove('active');
       }
-      flip.play('0.4s', 'ease-out').then(() => {
-        if (expanding) {
-          title.style.opacity = '0';
-          element.appendChild(title);
-          title.style.transition = 'opacity 0.3s ease-out';
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              title.style.opacity = '';
-            });
-          });
-        }
-      });
       state = !state;
-    });
+    }
+
+    function fadeInTitle() {
+      if (expanded) {
+        title.style.opacity = '0';
+        element.appendChild(title);
+        title.style.transition = 'opacity 0.3s ease-out';
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            title.style.opacity = '';
+          });
+        });
+      }
+    }
+
+    element.addEventListener('click', performFlip);
   </script>
 </html>

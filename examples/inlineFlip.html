@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FlipTransition Example</title>
+  </head>
+  <body>
+    <div id="rect"></div>
+  </body>
+  <style>
+    html,
+    body {
+      height: 100%;
+      background: #333;
+      position: relative;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #rect {
+      height: 100px;
+      width: 100px;
+      background: linear-gradient(maroon, red);
+      cursor: pointer;
+      color: white;
+      border-radius: 4px;
+      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    #rect:hover {
+      background: orangered;
+    }
+  </style>
+  <script src="../dist/flip-transition.min.js"></script>
+  <script>
+    const title = document.createElement('h1');
+    title.innerText = 'HELLO!';
+    title.style.display = 'flex';
+    title.style.justifyContent = 'center';
+    title.style.alignItems = 'center';
+    title.style.margin = '0';
+    title.style.height = '100%';
+    const element = document.getElementById('rect');
+    let state = true;
+    let expanded = false;
+    const flip = new FlipTransition.default(element);
+
+    function performFlip() {
+      expanded = !expanded;
+      fadeOutTitle().then(function () {
+        flip.first();
+        changeState();
+        flip.play('0.4s', 'ease-out').then(fadeInTitle);
+      });
+    }
+
+    function changeState() {
+      if (state) {
+        element.style.position = 'absolute';
+        element.style.width = '300px';
+        element.style.height = '200px';
+        element.style.left = 'calc(50% - 150px)';
+        element.style.top = 'calc(50% - 100px)';
+      } else {
+        element.style.position = '';
+        element.style.width = '';
+        element.style.height = '';
+        element.style.left = '';
+        element.style.top = '';
+      }
+      state = !state;
+    }
+
+    function fadeInTitle() {
+      if (expanded) {
+        title.style.opacity = '0';
+        element.appendChild(title);
+        title.style.transition = 'opacity 0.3s ease-out';
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            title.style.opacity = '';
+          });
+        });
+      }
+    }
+
+    function fadeOutTitle() {
+      if (!expanded) {
+        title.style.transition = 'opacity 0.3s ease-out';
+        return new Promise(function (resolve) {
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              title.style.opacity = '0';
+              title.addEventListener('transitionend', function fadeOutEnd() {
+                element.removeChild(title);
+                title.removeEventListener('transitionend', fadeOutEnd);
+                resolve();
+              });
+            });
+          });
+        });
+      } else return Promise.resolve();
+    }
+
+    element.addEventListener('click', performFlip);
+  </script>
+</html>

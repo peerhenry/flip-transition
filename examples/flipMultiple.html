@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="grid" class="container">
+      <div class="block red"></div>
+      <div class="block green"></div>
+      <div class="block blue"></div>
+      <div class="block yellow"></div>
+      <div class="block purple"></div>
+      <div class="block white"></div>
+    </div>
+  </body>
+  <style>
+    html,
+    body {
+      height: 100%;
+      background: #333;
+      position: relative;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(3, 200px);
+      grid-template-rows: repeat(2, 200px);
+      cursor: pointer;
+    }
+
+    .container:hover {
+      filter: brightness(1.1);
+    }
+
+    .block {
+      width: 200px;
+      height: 200px;
+    }
+
+    .red {
+      background: maroon;
+    }
+    .green {
+      background: green;
+    }
+    .blue {
+      background: navy;
+    }
+    .yellow {
+      background: orange;
+    }
+    .purple {
+      background: purple;
+    }
+    .white {
+      background: teal;
+    }
+  </style>
+  <script src="../dist/flip-transition.min.js"></script>
+  <script>
+    const grid = document.getElementById('grid');
+    let state = true;
+    const elements = document.getElementsByClassName('block');
+    const flip = new FlipTransition.default(elements);
+    grid.addEventListener('click', () => {
+      flip.first();
+      switchState();
+      flip.play('0.4s', 'ease-out');
+    });
+
+    function switchState() {
+      if (state) {
+        grid.style.gridTemplateColumns = 'repeat(2, 200px)';
+        grid.style.gridRowColumns = 'repeat(3, 200px)';
+      } else {
+        grid.style.gridTemplateColumns = '';
+        grid.style.gridRowColumns = '';
+      }
+      state = !state;
+    }
+  </script>
+</html>
